@@ -2,10 +2,17 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # Step 1: Load Image
-def load_image(image_path):
+def load_image(image_path: str) -> np.ndarray:
+    """
+    Load an image from a path
+    :param image_path: string containing the path where the image file is located
+    :return: bgr format image in
+    """
     image = cv2.imread(image_path)
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
 
 # Step 2: Correct Image Color and Remove Noise
 def correct_color_and_denoise(image):
@@ -20,15 +27,18 @@ def correct_color_and_denoise(image):
     denoised_image = cv2.GaussianBlur(corrected_image, (5, 5), 0)
     return denoised_image
 
+
 # Step 3: Generate Lightmap
 def generate_lightmap(image):
     return cv2.GaussianBlur(image, (15, 15), 0)
+
 
 # Step 4: Enhance Texture
 def enhance_texture(denoised_image, lightmap):
     gray_image = cv2.cvtColor(denoised_image, cv2.COLOR_RGB2GRAY)
     lightmap_gray = cv2.cvtColor(lightmap, cv2.COLOR_RGB2GRAY)
     return cv2.subtract(gray_image, lightmap_gray)
+
 
 # Step 5: Create Glandular Tube Masks (GTM)
 def create_glandular_masks(enhanced_texture):
@@ -37,12 +47,14 @@ def create_glandular_masks(enhanced_texture):
     gtm0_dilated = cv2.dilate(gtm0, None, iterations=2)  # Dilation
     return gtm0, gtm1, gtm0_dilated
 
+
 # Step 6: Create GTM Overlay
 def create_gtm_overlay(gtm0_dilated, gtm1):
     gtm2 = np.zeros_like(gtm0_dilated)
     gtm2[gtm0_dilated == 255] = 1  # Possible foreground (blue in overlay)
     gtm2[gtm1 == 255] = 2  # Definite foreground (yellow in overlay)
     return gtm2
+
 
 # Step 7: Simulate Feature Point Sampling
 def feature_point_sampling(mask, num_points=50):
@@ -51,10 +63,12 @@ def feature_point_sampling(mask, num_points=50):
     sampled_points = foreground_points[np.random.choice(foreground_points.shape[0], num_points, replace=False)]
     return sampled_points
 
+
 # Display Results
 def display_results(results):
     num_images = len(results)  # Number of images to display
-    fig, axes = plt.subplots(1, num_images, figsize=(5 * num_images, 5))  # Adjust figure size based on the number of images
+    fig, axes = plt.subplots(1, num_images,
+                             figsize=(5 * num_images, 5))  # Adjust figure size based on the number of images
 
     # Iterate through results and plot each image in the corresponding subplot
     for idx, (title, img) in enumerate(results.items()):
@@ -68,6 +82,7 @@ def display_results(results):
 
     plt.tight_layout()  # Automatically adjust subplot spacing
     plt.show()
+
 
 # Main Pipeline
 def process_image(image_path):
@@ -89,5 +104,7 @@ def process_image(image_path):
 
     print("Sampled Feature Points:", sampled_points)
 
-# Run the pipeline
-process_image("Cervix1.jpg")
+
+if __name__ == "__main__":
+    # Run the pipeline
+    process_image("image/Cervix2.jpg")

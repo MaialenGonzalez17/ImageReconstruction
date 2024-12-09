@@ -2,12 +2,12 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# https://link.springer.com/chapter/10.1007/978-3-540-39903-2_44
-
+# Load an endoscopic image
 def load_image(image_path):
-    image = cv2.imread(image_path)
-    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    """
+    Loads an image from the specified path.
+    """
+    return cv2.imread(image_path)
 
 # Temporal filtering: applies a median filter
 def temporal_filtering(image, filter_size):
@@ -92,4 +92,3 @@ if __name__ == "__main__":
 
     # Process the image
     process_endoscopic_image(image_path, camera_matrix, dist_coeffs)
-
