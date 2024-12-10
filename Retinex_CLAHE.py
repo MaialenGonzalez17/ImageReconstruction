@@ -1,134 +1,133 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from obtain_enhancement_metrics import calculate_psnr, calculate_ssim, calculate_mse
+import os
+import pandas as pd
+
+from obtain_enhancement_metrics import calculate_psnr, calculate_ssim, calculate_mse, calculate_entropy, calculate_contrast, calculate_sharpness
 
 # Function to apply CLAHE (Contrast Limited Adaptive Histogram Equalization)
 def apply_clahe(image):
-    """
-    Applies CLAHE to a grayscale image.
-
-    image: Grayscale image.
-    """
-    # Create CLAHE object with clip limit of 3.0 and tile size of 8x8
     clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
     return clahe.apply(image)
 
 # Function to apply an Improved MSR (Multi-Scale Retinex) filter to an image
-def improved_msr(image):
+def improved_msr(image, scales=[3, 5, 7]):
     """
-    Applies the Improved MSR (Multi-Scale Retinex) filter to an image.
+    Aplica el filtro Multi-Scale Retinex (MSR) de manera simplificada a una imagen en escala de grises.
 
-    image: Input image (single color channel).
+    Parámetros:
+        image: Imagen de entrada en escala de grises.
+        scales: Lista de escalas para el desenfoque gaussiano (valores de sigma).
+
+    Devuelve:
+        Imagen procesada con mejora de contraste.
     """
-    # Define different scale sizes for the MSR filter
-    scales = [3, 5, 7]
-    output = np.zeros_like(image, dtype=np.float32)  # Initialize the output as a float array
+    # Iniciar el acumulador de Retinex
+    retinex = np.zeros_like(image, dtype=np.float32)
 
-    # Loop over each scale and apply Gaussian blur for each scale
+    # Aplicar desenfoque gaussiano y calcular Retinex para cada escala
     for scale in scales:
-        blurred = cv2.GaussianBlur(image, (scale, scale), 0)  # Apply Gaussian blur
-        # Compute the MSR output for this scale
-        output += np.log(image + 1.0) - np.log(blurred + 1.0)
+        blurred = cv2.GaussianBlur(image, (0, 0), sigmaX=scale)
+        retinex += np.log1p(image) - np.log1p(blurred)
 
-    # Exponentiate the result and clip the output to be between 0 and 255
-    output = np.exp(output) - 1.0
-    return np.clip(output, 0, 255).astype(np.uint8)
+    # Promediar los resultados de las diferentes escalas
+    retinex /= len(scales)
+
+    # Normalizar y convertir a uint8
+    return cv2.normalize(retinex, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+
 
 # Function to merge the individual R, G, B channels back into an RGB image
 def merge_channels(r, g, b):
-    """
-    Merges the three color channels (R, G, B) into an RGB image.
-
-    r: Red channel.
-    g: Green channel.
-    b: Blue channel.
-    """
+    """    Merges the three color channels (R, G, B) into an RGB image."""
     return cv2.merge([r, g, b])
 
-# Function to calculate PSNR, SSIM, and MSE between the original and processed images
-def display_metrics(original_img, processed_img):
-    # Calculate PSNR, SSIM, and MSE
-    psnr_value = calculate_psnr(original_img, processed_img)
-    ssim_value = calculate_ssim(original_img, processed_img)
-    mse_value = calculate_mse(original_img, processed_img)
 
-    # Print the results
-    print(f"PSNR: {psnr_value:.2f} dB")
-    print(f"SSIM: {ssim_value:.4f}")
-    print(f"MSE: {mse_value:.2f}")
+def process_image(image_path):
+    """
+    Carga una imagen, aplica CLAHE e Improved MSR, y calcula las métricas PSNR, SSIM y MSE.
 
-# Load the input image
-image_path = "Public BDD (Intel)/0.jpg"  # Path to the image file
-img = cv2.imread(image_path)  # Read the image using OpenCV
+    Parameters:
+        image_path: Ruta a la imagen que se va a procesar.
 
-# Convert from BGR (OpenCV default) to RGB for processing
-img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    Returns:
+        Un diccionario con las métricas PSNR, SSIM y MSE.
+    """
+    # Cargar la imagen
+    img = cv2.imread(image_path)
 
-# Split the RGB image into individual channels
-r, g, b = cv2.split(img_rgb)
+    # Convertir de BGR a RGB
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-# Apply CLAHE to the individual color channels
-r_clahe = apply_clahe(r)  # CLAHE applied to the Red channel
-g_clahe = apply_clahe(g)  # CLAHE applied to the Green channel
-b_clahe = apply_clahe(b)  # CLAHE applied to the Blue channel
+    # Separar los canales R, G, B
+    r, g, b = cv2.split(img_rgb)
 
-# Merge the processed channels into an RGB image
-rgb_image = cv2.merge([r_clahe, g_clahe, b_clahe])
+    # Aplicar CLAHE a cada canal
+    r_clahe = apply_clahe(r)
+    g_clahe = apply_clahe(g)
+    b_clahe = apply_clahe(b)
 
-# Calculate and display PSNR, SSIM, and MSE between the original and processed images
-display_metrics(img_rgb, rgb_image)
+    # Aplicar Improved MSR a cada canal
+    r_msr = improved_msr(r_clahe)
+    g_msr = improved_msr(g_clahe)
+    b_msr = improved_msr(b_clahe)
 
-# Display the images in a 2x4 grid for comparison
-plt.figure(figsize=(15, 10))
+    # Unir los canales R, G, B procesados en una imagen RGB
+    processed_img = merge_channels(r_msr, g_msr, b_msr)
 
-# Display the original Red channel (grayscale)
-plt.subplot(2, 4, 1)
-plt.imshow(r, cmap='gray')
-plt.title("Original Red Channel")
-plt.axis('off')
+    # Convertir de nuevo a BGR para compararlo con la imagen original
+    processed_img_bgr = cv2.cvtColor(processed_img, cv2.COLOR_RGB2BGR)
 
-# Display the original Green channel (grayscale)
-plt.subplot(2, 4, 2)
-plt.imshow(g, cmap='gray')
-plt.title("Original Green Channel")
-plt.axis('off')
+    # Calcular las métricas PSNR, SSIM y MSE
+    psnr_rgb = calculate_psnr(img, processed_img_bgr)
+    ssim_rgb = calculate_ssim(img, processed_img_bgr)
+    mse_rgb = calculate_mse(img, processed_img_bgr)
+    entropy_gray = calculate_entropy(processed_img_bgr)
+    contrast_gray = calculate_contrast(processed_img_bgr)
+    sharpness_gray = calculate_sharpness(processed_img_bgr)
 
-# Display the original Blue channel (grayscale)
-plt.subplot(2, 4, 3)
-plt.imshow(b, cmap='gray')
-plt.title("Original Blue Channel")
-plt.axis('off')
+    # Devolver las métricas en un diccionario
+    return {
+        "psnr_rgb": psnr_rgb,
+        "ssim_rgb": ssim_rgb,
+        "mse_rgb": mse_rgb,
+        "entropy_gray": entropy_gray,
+        "contrast_gray": contrast_gray,
+        "sharpness_gray": sharpness_gray,
+    }
 
-# Display the original RGB image (in grayscale)
-plt.subplot(2, 4, 4)
-plt.imshow(img_rgb, cmap='gray')
-plt.title("Original Image")
-plt.axis('off')
+if __name__ == "__main__":
+    folder_path = "Public BDD (Intel)/"
+    results = []  # List to store results for each image
 
-# Display the processed Red channel (after CLAHE)
-plt.subplot(2, 4, 5)
-plt.imshow(r_clahe, cmap='gray')
-plt.title("Processed Red Channel (CLAHE)")
-plt.axis('off')
+    # Iterate over all files in the directory
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith((".jpg", ".png", ".jpeg")):
+            image_path = os.path.join(folder_path, file_name)
+            # Process the image and obtain results
+            result = process_image(image_path)
+            # Add the results to the list
+            results.append(result)
 
-# Display the processed Green channel (after CLAHE)
-plt.subplot(2, 4, 6)
-plt.imshow(g_clahe, cmap='gray')
-plt.title("Processed Green Channel (CLAHE)")
-plt.axis('off')
+    # Convert the list of results into a pandas DataFrame
+    df = pd.DataFrame(results)
 
-# Display the processed Blue channel (after CLAHE)
-plt.subplot(2, 4, 7)
-plt.imshow(b_clahe, cmap='gray')
-plt.title("Processed Blue Channel (CLAHE)")
-plt.axis('off')
+    # Save the results to a CSV file
+    df.to_csv("image_metrics_results.csv", index=False)
 
-# Display the final RGB image after merging the processed channels
-plt.subplot(2, 4, 8)
-plt.imshow(rgb_image)
-plt.title("Processed Image (CLAHE)")
-plt.axis('off')
+    # Calculate the averages for PSNR, SSIM, and MSE
+    mean_psnr_rgb = df["psnr_rgb"].mean()
+    mean_ssim_rgb = df["ssim_rgb"].mean()
+    mean_mse_rgb = df["mse_rgb"].mean()
+    mean_entropy_gray = df["entropy_gray"].mean()
+    mean_contrast_gray = df["contrast_gray"].mean()
+    mean_sharpness_gray = df["sharpness_gray"].mean()
 
-# Show the plot
-plt.show()
+    # Display the results on the screen
+    print("Mean PSNR :", mean_psnr_rgb)
+    print("Mean SSIM :", mean_ssim_rgb)
+    print("Mean MSE :", mean_mse_rgb)
+    print("Mean Entropy :", mean_entropy_gray)
+    print("Mean Contrast :", mean_contrast_gray)
+    print("Mean Sharpness :", mean_sharpness_gray)

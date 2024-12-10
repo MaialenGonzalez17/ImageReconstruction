@@ -10,7 +10,6 @@ from skimage.metrics import structural_similarity as ssim
 
 
 # The Peak Signal-to-Noise Ratio (PSNR) is a metric commonly used to evaluate the quality of an image after compression or enhancement.
-
 def get_all_jpg_paths(directory):
     # Find all .jpg files in the directory and subdirectories
     jpg_files = glob.glob(f"{directory}/**/*.jpg", recursive=True)
@@ -33,11 +32,21 @@ def calculate_psnr(img1, img2):
 
     return psnr
 
-
 def calculate_ssim(img1, img2):
-    # Convert to grayscale for SSIM calculation
-    img1_gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-    img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    """Calculate SSIM between two images. Convert to grayscale if necessary"""
+    # Check if img1 has more than 1 channel (RGB), and if so, convert it to grayscale
+    if len(img1.shape) == 3:
+        img1_gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    else:
+        img1_gray = img1  # The image is already in grayscale
+
+    # Check if img2 has more than 1 channel (RGB), and if so, convert it to grayscale
+    if len(img2.shape) == 3:
+        img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    else:
+        img2_gray = img2  # The image is already in grayscale
+
+    # Calculate SSIM between the grayscale images
     score, _ = ssim(img1_gray, img2_gray, full=True)
     return score
 
@@ -47,22 +56,41 @@ def calculate_mse(img1, img2):
 
 
 def calculate_entropy(img):
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    entropy = shannon_entropy(img_gray)
-    return entropy
+    """Calculate the entropy of an image."""
+    # Check if the image has more than 1 channel (RGB), and if so, convert it to grayscale
+    if len(img.shape) == 3:
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        img_gray = img  # The image is already in grayscale
+
+    # Calculate and return the entropy
+    return shannon_entropy(img_gray)
 
 
 def calculate_sharpness(img):
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    """Calculate the sharpness of an image."""
+    # Check if the image has more than 1 channel (RGB), and if so, convert it to grayscale
+    if len(img.shape) == 3:
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        img_gray = img  # The image is already in grayscale
+
+    # Calculate the Laplacian variance to measure sharpness
     laplacian_var = cv2.Laplacian(img_gray, cv2.CV_64F).var()
     return laplacian_var
 
 
 def calculate_contrast(img):
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    """Calculate the contrast of an image."""
+    # Check if the image has more than 1 channel (RGB), and if so, convert it to grayscale
+    if len(img.shape) == 3:
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        img_gray = img  # The image is already in grayscale
+
+    # Calculate contrast as the standard deviation of pixel values
     contrast = img_gray.std()
     return contrast
-
 
 # Calculate quality metrics
 def calculate_1image_metrics(image):
