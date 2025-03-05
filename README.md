@@ -50,10 +50,7 @@ El estudio se centra en dos algoritmos:
 - Algoritmo de métodos tradiconales: actúan eliminando el ruido de una imagen y aplicándoles un filtro que conserve los bordes mejorando así la relación señal-ruido máxima (PSNR).
 - Algoritmo de IA: Utilizan herramientas como redes neuronales convolucionales, autocodificadores y redes generativas adversarias para aprender automáticamente a mejorar la calidad de las imágenes, destacándose por preservar detalles y colores con gran precisión.
 
-Para desarrollar ambos algoritmos, el primer paso ha sido analizar y recopilar información de estudios previos disponibles en el mercado. Este análisis está documentado en la carpeta **[Pipeline_Paola_Comparativo]( https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/features/Pipeline_Paola_Comparativo)**. 
-
-Una vez identificadas las funciones más efectivas para la corrección de calidad, se realizará una comparación detallada de las métricas y resultados de los estudios. Esto permitirá determinar qué filtro es el más adecuado para nuestra base de datos. Los resultados de estas pruebas se encuentran organizados en la carpeta **[Pruebas_TFG](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/features/Pruebas_TFG)**.
-
+Para desarrollar ambos algoritmos, el primer paso ha sido analizar y recopilar información de estudios previos disponibles en el mercado. Una vez identificados los estudios que mejor resultados obtuviesen en la corrección de calidad, se ha realizado una comparación detallada de las métricas y resultados que estos obtenian. Esto ha permitido determinar que procesos utilizados son los más adecuados o los que mejor resultados pueden obtener en nuestra base de datos.
 Finalmente, la carpeta **[TFG_mgonzalezp](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/features/TFG_mgonzalezp)** contiene los pipelines finales, que integran las funciones con las mejores métricas aplicadas a la base de datos.
 
 **Para más información, ver dentro de cada carpeta.**
