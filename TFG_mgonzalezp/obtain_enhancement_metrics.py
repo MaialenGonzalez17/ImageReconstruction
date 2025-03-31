@@ -43,7 +43,6 @@ def calculate_sharpness(img):
 
     return normalized_sharpness
 
-
 def calculate_contrast(img):
     if len(img.shape) == 3:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -54,6 +53,24 @@ def calculate_1image_metrics(image):
     sharpness = calculate_sharpness(image)
     contrast = calculate_contrast(image)
     return round(entropy, 2), round(sharpness, 2), round(contrast, 2)
+
+def calculate_colorfulness(image):
+    """Calculate the colorfulness of the image."""
+    # Convert to RGB
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    # Split the channels
+    R, G, B = cv2.split(image_rgb)
+    # Calculate mean and standard deviation for each channel
+    rg = np.absolute(R - G)
+    yb = np.absolute(0.5 * (R + G) - B)
+    # Compute the colorfulness metric
+    rg_mean = np.mean(rg)
+    yb_mean = np.mean(yb)
+    rg_std = np.std(rg)
+    yb_std = np.std(yb)
+    colorfulness = np.sqrt(rg_mean ** 2 + yb_mean ** 2) + 0.3 * np.sqrt(rg_std ** 2 + yb_std ** 2)
+    return colorfulness
+
 
 def calculate_metrics(original_img, modified_img):
     psnr = calculate_psnr(original_img, modified_img)
@@ -71,6 +88,7 @@ def calculate_averages(results):
         "average_entropy": sum(r["entropy_gray"] for r in results) / num_images,
         "average_contrast": sum(r["contrast_gray"] for r in results) / num_images,
         "average_sharpness": sum(r["sharpness_gray"] for r in results) / num_images,
+        "average_colorfulness": sum(r["colorfulness_gray"] for r in results) / num_images,
     }
 
 # File and plotting utilities
