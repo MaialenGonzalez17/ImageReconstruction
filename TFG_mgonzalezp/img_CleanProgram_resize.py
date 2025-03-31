@@ -3,66 +3,46 @@ import cv2
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import pandas as pd
 
 from obtain_enhancement_metrics import (
     calculate_1image_metrics,
     calculate_metrics,
     save_results_to_csv,
+    calculate_colorfulness
 )
 
-def resize_image(image, min_side=1024):
-    """Resize image maintaining aspect ratio so the shortest side is 1024 pixels."""
-    h, w = image.shape[:2]
-    scale = min_side / min(h, w)
-    new_size = (int(w * scale), int(h * scale))
-    return cv2.resize(image, new_size, interpolation=cv2.INTER_AREA)
-
+def resize_image(image, target_size=(1024, 1365)):
+    """Resize image to target size (320x320)."""
+    return cv2.resize(image, target_size, interpolation=cv2.INTER_AREA)
 
 def apply_median_filter(image, ksize=3):
-    """Apply Median filter to smooth the image."""
+    """Apply Median filter to reduce noise."""
     return cv2.medianBlur(image, ksize)
 
-
 def clahe_lab(image):
-    """Enhances the contrast of a BGR image using CLAHE in the LAB color space."""
+    """Enhance contrast using CLAHE in LAB color space."""
     lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
     l, a, b = cv2.split(lab)
     clahe = cv2.createCLAHE(clipLimit=1.012, tileGridSize=(26, 26))
     l_clahe = clahe.apply(l)
-    lab_clahe = cv2.merge((l_clahe, a, b))
-    return cv2.cvtColor(lab_clahe, cv2.COLOR_LAB2BGR)
-
-
-#def cv2_white_balance(image):
-    #hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    #h, s, v = cv2.split(hsv)
-    #s = cv2.convertScaleAbs(s, alpha=(np.mean(h) / np.mean(s)), beta=0)
-    #v = cv2.convertScaleAbs(v, alpha=(np.mean(h) / np.mean(v)), beta=0)
-    #return cv2.cvtColor(cv2.merge([h, s, v]), cv2.COLOR_HSV2BGR)
-
+    return cv2.cvtColor(cv2.merge((l_clahe, a, b)), cv2.COLOR_LAB2BGR)
 
 def apply_sharpening(image):
-    """Sharpens the image using a convolution kernel."""
-    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+    """Sharpen image using a convolution kernel."""
+    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]], dtype=np.float32)
     return cv2.filter2D(image, -1, kernel)
 
-
 def reduce_saturation(image, scale=0.9):
-    """Reduces the saturation of an image by a specified scale."""
-    try:
-        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        h, s, v = cv2.split(hsv)
-        s = np.clip(s * scale, 0, 255).astype(np.uint8)
-        hsv_saturated = cv2.merge((h, s, v))
-        return cv2.cvtColor(hsv_saturated, cv2.COLOR_HSV2BGR)
-    except Exception as e:
-        print(f"Error in reducing saturation: {e}")
-        return image
+    """Reduce image saturation by a specified factor."""
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hsv[..., 1] = np.clip(hsv[..., 1] * scale, 0, 255).astype(np.uint8)
+    return cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
 
 def image_enhancement_pipeline(image_path, save_folder):
-    """Processes an image and calculates metrics."""
-    image = cv2.imread(image_path)
+    """Process an image and calculate enhancement metrics."""
+    image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
     if image is None:
         print(f"Error: Couldn't load the image from {image_path}")
         return None
@@ -70,17 +50,17 @@ def image_enhancement_pipeline(image_path, save_folder):
     image = resize_image(image)
     denoised = apply_median_filter(image)
     contrast_corrected = clahe_lab(denoised)
-    #color_corrected = cv2_white_balance(contrast_corrected)
     reduced_saturation = reduce_saturation(contrast_corrected, scale=0.9)
     sharpened = apply_sharpening(reduced_saturation)
     normalized = cv2.normalize(sharpened, None, 0, 255, cv2.NORM_MINMAX)
 
     filename = os.path.basename(image_path)
-    save_path = os.path.join(save_folder, f"normalized_{filename.rsplit('.', 1)[0]}.png")
+    save_path = os.path.join(save_folder, f"{os.path.splitext(filename)[0]}.png")
     cv2.imwrite(save_path, normalized)
 
     psnr, ssim, mse = calculate_metrics(image, normalized)
     entropy, sharpness, contrast = calculate_1image_metrics(normalized)
+    colorfulness = calculate_colorfulness(normalized)
 
     return {
         "image_name": filename,
@@ -90,29 +70,23 @@ def image_enhancement_pipeline(image_path, save_folder):
         "entropy_gray": entropy,
         "contrast_gray": contrast,
         "sharpness_gray": sharpness,
+        "colorfulness": colorfulness,
     }
 
-
 def process_images_in_folder(folder_path, save_folder):
-    """Processes all images in a folder and returns image paths."""
-    if not os.path.exists(save_folder):
-        os.makedirs(save_folder)
-
-    image_paths = [
+    """Retrieve image paths from a folder."""
+    os.makedirs(save_folder, exist_ok=True)
+    return [
         os.path.join(folder_path, fname)
         for fname in os.listdir(folder_path)
         if fname.lower().endswith((".jpg", ".png", ".jpeg", ".bmp"))
     ]
 
-    return image_paths
-
-# Parallelized processing function to handle multiple images simultaneously
-def process_images_in_parallel(image_paths, save_folder):
+def process_images_in_parallel(image_paths, save_folder, max_workers=8):
     """Process images concurrently using ThreadPoolExecutor."""
     results = []
-    with ThreadPoolExecutor() as executor:
-        futures = {executor.submit(image_enhancement_pipeline, image_path, save_folder): image_path for image_path in
-                   image_paths}
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(image_enhancement_pipeline, img, save_folder): img for img in image_paths}
         for future in as_completed(futures):
             try:
                 result = future.result()
@@ -123,40 +97,28 @@ def process_images_in_parallel(image_paths, save_folder):
     return results
 
 def calculate_stats(results):
-    """Calculates mean and standard deviation for each metric."""
-    metrics = {
-        "psnr_value": [],
-        "ssim_value": [],
-        "mse_value": [],
-        "entropy_gray": [],
-        "contrast_gray": [],
-        "sharpness_gray": [],
-    }
+    """Calculate mean and standard deviation for each metric using NumPy arrays."""
+    if not results:
+        return {}
 
-    for result in results:
-        if result:
-            for key in metrics:
-                metrics[key].append(result[key])
+    metrics = {key: np.array([res[key] for res in results], dtype=np.float32) for key in results[0] if
+               key != "image_name"}
 
-    stats = {
-        metric: {
-            "mean": np.mean(values),
-            "std_dev": np.std(values),
-        }
-        for metric, values in metrics.items()
-    }
-
-    return stats
+    return {metric: {"mean": np.mean(values), "std_dev": np.std(values)} for metric, values in metrics.items()}
 
 if __name__ == "__main__":
-    folder_path = "Public BDD (Intel)/Imagenes/"
-    save_folder = "image_enhacement/Optuna/"
-    output_csv = "Metricas/Optuna/Metricas_Optuna.csv"
+    folder_path = "../Restormer/data/rain100L/train/rain/"
+    save_folder = "Resultados_finales_Img/Borrar/"
+    output_csv = "Resultados_finales_Img/Metricas_Intel.csv"
 
     start_time = time.time()
 
     image_paths = process_images_in_folder(folder_path, save_folder)
-    results = process_images_in_parallel(image_paths, save_folder)
+    results = process_images_in_parallel(image_paths, save_folder, max_workers=8)
+
+    total_time = time.time() - start_time
+    num_images = len(results)
+    avg_time_per_image = total_time / num_images if num_images > 0 else 0
 
     if results:
         stats = calculate_stats(results)
@@ -167,4 +129,5 @@ if __name__ == "__main__":
     else:
         print("No valid images were processed.")
 
-    print(f"Total Execution Time: {time.time() - start_time:.2f} seconds")
+    print(f"Total Execution Time: {total_time:.2f} seconds")
+    print(f"Average Time per Image: {avg_time_per_image:.2f} seconds")
