@@ -33,7 +33,6 @@ El pipeline desarrollado ha sido probado con una base de datos pública. Se han 
 
 ## Métricas de Calidad
 <div align="center">
-
 | Métrica              | Imagen Original | Imagen Procesada |
 |----------------------|----------------|----------------|
 | **Entropía**        | 7.12           | 7.29           |
