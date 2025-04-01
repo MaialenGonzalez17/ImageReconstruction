@@ -2,7 +2,7 @@
 
 Este repositorio recoge las prácticas de Maialen Gonzalez Pancorbo de MU desde Noviembre 2024 - Julio 2025.
 
-El objetivo principal de este proyecto es desarrollar el algoritmo que mejore la calidad de las imágenes de una sonda transvaginal, para luego combinarlo con un modelo de detección que permita visualizar el cérvix en tiempo real. 
+El objetivo principal de este proyecto es desarrollar un algoritmo que mejore la calidad de las imágenes de una sonda transvaginal, para luego combinarlo con un modelo de detección que permita visualizar el cérvix en tiempo real. 
 
 ## Experimentación de mejora de calidad de imagen
 
@@ -18,13 +18,28 @@ El dispositivo incorpora una cámara en la punta de la sonda y una pantalla para
 ### Métricas para evaluar la mejora
 Para determinar el nivel adecuado de mejora en la calidad de las imágenes, es fundamental definir qué se entiende por buena calidad en una imagen endoscópica. Dado que el objetivo es facilitar el trabajo de guiado de la sonda a un profesional clínico, su criterio de calidad de imagen es clave para lograr la mejora. Como este criterio es difícil de describir con precisión por su componente subjetivo, se propone evaluar las imágenes desde otro enfoque. Por ese motivo, además de la opinión de los profesionales, también se han calculado métricas cuantitativas: 
 
-- **Métricas sin referencia**: Estas métricas analizan la imagen basándose en modelos de percepción visual para estimar su calidad.  Se utilizan a lo largo del proyecto para calcular la mejora de una imagen tras ser procesada. Algunos ejemplos incluyen:
-    - Entropía - Es una medida de la cantidad de información o detalle que contiene una imagen (en un margen de 0 a 8). Una imagen con alta entropía tiene más variación en sus píxeles y detalles, lo que significa que es más diversa.
-    - Contraste – Refleja la variación en el brillo, valores más altos son preferibles.
-    - Nitidez – Indica la claridad de los bordes y los detalles, valores más altos son preferibles. Cuantos más detalles y más contraste tengan estos, mayor será la calidad de imagen.
-    - Colorido - Indica la saturación y la gama de colores de la imagen. Se evalúa para determinar si los colores son naturales o si la imagen está sobresaturada, lo que puede hacer que se vea artificial o poco realista.
-    - Calidad general - Mide la calidad general de una imagen de manera perceptual, es decir, cómo se vería desde la perspectiva de un observador humano. La calidad general se evalúa mediante las métricas finales de calidad, complementadas con la valoración cualitativa de los expertos.
-    - Diversidad: Indica la cantidad de variabilidad en los colores, texturas y detalles presentes en la imagen. La diversidad de una imagen se mide a través de la entropía.
+- **Métricas sin referencia**: Sirven para evaluar la similitud entre una imagen original y su versión reconstruida o la degradada. Permiten calcular el nivel de ruido y la similitud entre la imagen degradada y la original, así como entre la imagen procesada y la original, con el fin de evaluar si la técnica aplicada ha logrado reducir el ruido y mejorar la calidad de la imagen, acercándola más a la original. 
+Se utilizan a lo largo del proyecto para evaluar qué técnicas logran mejorar de manera más efectiva las imágenes degradadas.
+
+# Métricas de Evaluación
+
+## Métricas de Fidelidad
+Estiman la similitud a nivel de píxel entre la imagen referencial y la imagen derivada.
+
+| Métrica | Función | Valor óptimo |
+|---------|---------|--------------|
+| MSE     | Mide la diferencia promedio entre los píxeles de la imagen original y la procesada | Cuanto más alto, más diferencias |
+| PSNR    | Compara el nivel máximo de la señal con el ruido de fondo. Un valor más alto indica mejor calidad | PSNR más alto indica una calidad mejor y más cercana a la imagen original (30 dB a 40 dB) |
+
+## Métricas de Calidad
+A diferencia de las métricas de fidelidad, estas consideran la percepción humana, evaluando mejor cómo las diferencias entre imágenes afectan la calidad percibida.
+
+| Métrica | Función | Valor óptimo |
+|---------|---------|--------------|
+| SSIM    | Evalúa la similitud estructural entre dos imágenes, teniendo en cuenta luminancia, contraste y estructura | Un valor de SSIM más cercano a 1 indica una mayor similitud con la imagen original |
+| LPIPS   | Evalúa la similitud perceptual entre imágenes, alineándose mejor con la percepción humana que métricas tradicionales | Más bajo significa más parecido |
+| VDP     | Evalúa las diferencias físicas visibles entre pares de imágenes. Toma en cuenta cómo un observador humano vería las diferencias en la imagen | Un valor cercano a 0 indica que no hay diferencias visibles entre las imágenes. |
+
 
 
 - **Métricas con referencia**: Sirven para evaluar la similitud entre una imagen original y su versión reconstruida o la degradada. Se utilizan a lo largo del proyecto para evaluar qué técnicas logran mejorar de manera más efectiva las imágenes degradadas. Estas métricas permiten calcular el nivel de ruido y la similitud entre la imagen degradada y la original, así como entre la imagen procesada y la original, con el fin de evaluar si la técnica aplicada ha logrado reducir el ruido y mejorar la calidad de la imagen, acercándola más a la original.
@@ -51,7 +66,6 @@ El estudio se centra en dos algoritmos:
 
 - Algoritmo de IA: Utilizan herramientas como redes neuronales convolucionales, autocodificadores y redes generativas adversarias para aprender automáticamente a mejorar la calidad de las imágenes, destacándose por preservar detalles y colores con gran precisión.
 
-Para desarrollar ambos algoritmos, el primer paso ha sido analizar y recopilar información de estudios previos disponibles en el mercado. Una vez identificados los estudios que mejor resultados obtuviesen en la corrección de calidad, se ha realizado una comparación detallada de las métricas y resultados que estos obtenian. Esto ha permitido determinar que procesos utilizados son los más adecuados o los que mejor resultados pueden obtener en nuestra base de datos.
 
 La carpeta **[TFG_mgonzalezp](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/features/TFG_mgonzalezp)** contiene los algoritmos finales.
 
