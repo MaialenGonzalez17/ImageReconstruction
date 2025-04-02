@@ -36,7 +36,7 @@ A diferencia de las métricas de fidelidad, estas consideran la percepción huma
 | Métrica | Función | Valor óptimo/mínimo |
 | --- | --- | --- |
 | **SSIM** | Evalúa la similitud estructural entre dos imágenes, teniendo en cuenta luminancia, contraste y estructura | Un valor de SSIM más cercano a 1 indica una mayor similitud con la imagen original (>0.85) |
-| **LPIPS [12]** | Evalúa la similitud perceptual entre imágenes, alineándose mejor con la percepción humana que métricas tradicionales | Más bajo significa más parecido (<0.1) |
+| **LPIPS** | Evalúa la similitud perceptual entre imágenes, alineándose mejor con la percepción humana que métricas tradicionales | Más bajo significa más parecido (<0.1) |
 | **VDP - Visible Differences Predictor** | Evalúa las diferencias físicas visibles entre pares de imágenes. Toma en cuenta cómo un observador humano vería las diferencias en la imagen | LPIPS es razonablemente cercano en términos de comparaciones de calidad visual, por lo que no es necesario calcular esta métrica. |
 
 
