@@ -73,9 +73,8 @@ Existen otras métricas sin referencia que utilizan un modelo entrenado para cal
 
 Realizar una mejora de la calidad de imagen es fundamental para lograr los mejores resultados visuales y cuantitativos posibles. Se han propuesto dos tipos de métodos de procesamiento para mejorar las imágenes médicas:   
 
-- Algoritmo de basado en métodos tradiconales
-- Algoritmo basado en aprendizaje profundo
+- **[Algoritmo de basado en métodos tradiconales](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/TFG_mgonzalezp/Algoritmo%20basado%20en%20m%C3%A9todos%20tradicionales)**.
 
-Para ver información más detallada de cada uno ver **[TFG_mgonzalezp](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/features/TFG_mgonzalezp)**.
+- **[Algoritmo basado en aprendizaje profundo](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/Algoritmo%20basado%20en%20aprendizaje%20profundo)**.
 
 
