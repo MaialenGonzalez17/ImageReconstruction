@@ -26,18 +26,19 @@ Se utilizan a lo largo del proyecto para evaluar qué técnicas logran mejorar d
 Estiman la similitud a nivel de píxel entre la imagen referencial y la imagen derivada.
 
 | Métrica | Función | Valor óptimo |
-|---------|---------|--------------|
-| MSE     | Mide la diferencia promedio entre los píxeles de la imagen original y la procesada | Cuanto más alto, más diferencias |
-| PSNR    | Compara el nivel máximo de la señal con el ruido de fondo. Un valor más alto indica mejor calidad | PSNR más alto indica una calidad mejor y más cercana a la imagen original (30 dB a 40 dB) |
+| --- | --- | --- |
+| **MSE** | Mide la diferencia promedio entre los píxeles de la imagen original y la procesada | Valores cercanos a cero indican alta similitud |
+| **PSNR** | Compara el nivel máximo de la señal con el ruido de fondo. Un valor más alto indica mejor calidad | Valores superiores a 30 dB suelen indicar una buena calidad de imagen |
 
 ##### Métricas de Calidad
 A diferencia de las métricas de fidelidad, estas consideran la percepción humana, evaluando mejor cómo las diferencias entre imágenes afectan la calidad percibida.
 
-| Métrica | Función | Valor óptimo |
-|---------|---------|--------------|
-| SSIM    | Evalúa la similitud estructural entre dos imágenes, teniendo en cuenta luminancia, contraste y estructura | Un valor de SSIM más cercano a 1 indica una mayor similitud con la imagen original |
-| LPIPS   | Evalúa la similitud perceptual entre imágenes, alineándose mejor con la percepción humana que métricas tradicionales | Más bajo significa más parecido |
-| VDP     | Evalúa las diferencias físicas visibles entre pares de imágenes. Toma en cuenta cómo un observador humano vería las diferencias en la imagen | Un valor cercano a 0 indica que no hay diferencias visibles entre las imágenes. |
+| Métrica | Función | Valor óptimo/mínimo |
+| --- | --- | --- |
+| **SSIM** | Evalúa la similitud estructural entre dos imágenes, teniendo en cuenta luminancia, contraste y estructura | Un valor de SSIM más cercano a 1 indica una mayor similitud con la imagen original (>0.85) |
+| **LPIPS [12]** | Evalúa la similitud perceptual entre imágenes, alineándose mejor con la percepción humana que métricas tradicionales | Más bajo significa más parecido (<0.1) |
+| **VDP - Visible Differences Predictor** | Evalúa las diferencias físicas visibles entre pares de imágenes. Toma en cuenta cómo un observador humano vería las diferencias en la imagen | LPIPS es razonablemente cercano en términos de comparaciones de calidad visual, por lo que no es necesario calcular esta métrica. |
+
 
 
 - **Métricas sin referencia**: Estas métricas solo utilizan un dato de entrada: la imagen analizada. Por lo tanto, la evaluación de la calidad de la imagen se realiza sin la ventaja de datos comparativos o de referencia, lo que significa que se basa únicamente en los atributos inherentes de la propia imagen.  
@@ -48,25 +49,25 @@ Se utilizan a lo largo del proyecto para calcular la mejora de una imagen tras s
 
 ##### Métricas de Calidad
 
-| Métrica       | Función                                                                                             | Valor óptimo                                                                 |
-|---------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| Entropía      | Mide la cantidad de información o detalle presente en una imagen.                                    | Valores más altos son preferibles, en un rango de 0 a 8.                      |
-| Contraste     | Evalúa la variación en el brillo entre diferentes áreas de la imagen.                                | Valores más altos son deseables                                                |
-| Nitidez       | Indica la claridad de los bordes y detalles en una imagen.                                          | Valores más altos son deseables                                                |
-| Colorido      | Mide la saturación y gama de colores en la imagen.                                                  | Valores más altos son deseables                                                |
-| Calidad General | Evalúa la calidad perceptual de la imagen desde la perspectiva de un observador humano.            | La calidad general se evalúa mediante las métricas finales de calidad, complementadas con la valoración cualitativa de los expertos. |
-| Diversidad    | Representa la variabilidad en colores, texturas y detalles presentes en la imagen.                  | La diversidad de una imagen se mide a través de la entropía, por lo que no es necesario calcularla. |
+| Métrica | Función | Valor óptimo/mínimo |
+| --- | --- | --- |
+| **Entropía** | Mide la cantidad de información o detalle presente en una imagen. | Valores más altos son preferibles, en un rango de 0 a 8. |
+| **Contraste** | Evalúa la variación en el brillo entre diferentes áreas de la imagen. | El contraste se ajusta en un rango de 0 a 100, donde 0 es el mínimo y 100 es el máximo (diferencias marcadas entre claras y oscuras). Valores óptimos entre 40 y 70%. |
+| **Nitidez** | Indica la claridad de los bordes y detalles en una imagen. | La nitidez varía entre 0 (mínima nitidez, imagen borrosa) y 100 (máxima nitidez, resaltando en exceso los detalles). Para una calidad óptima de imagen, se recomienda un valor entre 40 y 50. |
+| **Colorido** | Mide la saturación y gama de colores en la imagen. | 0%: Representa una imagen en escala de grises <br> 100%: Indica la máxima saturación <br> El nivel de color adecuado es alrededor del 50%. |
+| **Calidad General** | Evalúa la calidad perceptual de la imagen desde la perspectiva de un observador humano. | La calidad general se evalúa mediante las métricas finales de calidad, complementadas con la valoración cualitativa de los expertos. |
+| **Diversidad** | Representa la variabilidad en colores, texturas y detalles presentes en la imagen. | La diversidad de una imagen se mide a través de la entropía por lo que no es necesario calcularla. |
 
 ##### Métricas Basadas en Redes Neuronales
 
 Existen otras métricas sin referencia que utilizan un modelo entrenado para calcular una puntuación de calidad. Estos modelos buscan detectar distorsiones de manera similar a cómo lo haría un ojo humano:
 
-| Métrica                                     | Función                                                                                             | Valor óptimo                                                                 |
-|---------------------------------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| BRISQUE (Blind/Referenceless Image Spatial Quality Evaluator) | Evalúa la calidad perceptual de una imagen a través de características estadísticas.               | 0 (menor es mejor)                                                           |
-| NIQE (Natural Image Quality Evaluator)     | Utiliza estadísticas de la imagen para predecir la calidad percibida por un observador humano.       | 0 (menor es mejor)                                                           |
-| NIMA (Neural Image Assessment)             | Se basa en una red neuronal convolucional que funciona puntuando imágenes de forma fiable y con alta correlación con la percepción humana. | 1 - 4 → Baja calidad<br>4 - 7 → Calidad aceptable<br>7 - 10 → Alta calidad.  |
-   
+| Métrica | Función | Valor óptimo/mínimo |
+| --- | --- | --- |
+| **BRISQUE - Blind/Referenceless Image Spatial Quality Evaluator** | Evalúa la calidad perceptual de una imagen a través de características estadísticas. | Un valor más bajo indica una mejor calidad de imagen. (óptimo → 0) |
+| **NIQE - Natural Image Quality Evaluator** | Utiliza estadísticas de la imagen para predecir la calidad percibida por un observador humano. | Valores más bajos corresponden a imágenes de mayor calidad. (óptimo → 0) |
+| **NIMA - Neural Image Assessment** | Se basa en una red neuronal convolucional que funciona puntuando imágenes de forma fiable y con alta correlación con la percepción humana. | 1 - 4 → Baja calidad <br> 4 - 7 → Calidad aceptable <br> 7 - 10 → Alta calidad. |
+
 
 ### Experimentación de algoritmos
 
