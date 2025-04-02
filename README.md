@@ -69,19 +69,9 @@ Existen otras métricas sin referencia que utilizan un modelo entrenado para cal
 | **NIMA - Neural Image Assessment** | Se basa en una red neuronal convolucional que funciona puntuando imágenes de forma fiable y con alta correlación con la percepción humana. | 1 - 4 → Baja calidad <br> 4 - 7 → Calidad aceptable <br> 7 - 10 → Alta calidad. |
 
 
-### Experimentación de algoritmos
-
-#### Pipeline clásico 
-
-TODO: Completar con algoritmo de pnmartinez
-
-#### Mejora de iluminación con Deep Learning – Low light enhancement with T-Diffusion (MICCAI 2024)
-
-No parece funcionar. pnmartinez está tratando de revisar.
-
 ## Contenido
 
-Realizar una mejora de la calidad de imagen es fundamental para lograr los mejores resultados visuales y cuantitativos posibles. Se han propuesto dos tipos de métodos de procesamiento para mejorar las imágenes médicas  
+Realizar una mejora de la calidad de imagen es fundamental para lograr los mejores resultados visuales y cuantitativos posibles. Se han propuesto dos tipos de métodos de procesamiento para mejorar las imágenes médicas:   
 
 - Algoritmo de basado en métodos tradiconales
 - Algoritmo basado en aprendizaje profundo
