@@ -54,8 +54,6 @@ Estas métricas analizan únicamente la imagen degradada o restaurada, sin neces
 | **Contraste** | Calcula la variación del brillo entre áreas. | Entre 40–70% (rango 0–100) |
 | **Nitidez** | Indica la claridad de los bordes y detalles. | Entre 60–70% (rango 0–100) |
 | **Colorido** | Mide la saturación y gama de colores. | Alrededor del 50% (rango 0–100) |
-| **Calidad General** | Valoración perceptual global desde la perspectiva de un observador humano. | Evaluación subjetiva o combinada |
-| **Diversidad** | Representa la variabilidad de colores y texturas (calculada mediante entropía). | No se calcula directamente |
 
 ##### Métricas Basadas en Redes Neuronales
 
