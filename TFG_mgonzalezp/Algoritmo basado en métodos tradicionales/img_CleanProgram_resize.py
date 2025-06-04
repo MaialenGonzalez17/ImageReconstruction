@@ -12,36 +12,49 @@ from obtain_enhancement_metrics import (
     calculate_colorfulness
 )
 
+
 def resize_image(image, target_size=(1024, 1365)):
-    """Resize image to target size (320x320)."""
+    """Resize the input image to the target dimensions using area interpolation.
+    This helps standardize all images before further processing."""
     return cv2.resize(image, target_size, interpolation=cv2.INTER_AREA)
 
+
 def apply_median_filter(image, ksize=3):
-    """Apply Median filter to reduce noise."""
+    """Apply a median filter to the image to reduce salt-and-pepper noise.
+    This operation preserves edges while removing small pixel-level artifacts."""
     return cv2.medianBlur(image, ksize)
 
+
 def clahe_lab(image):
-    """Enhance contrast using CLAHE in LAB color space."""
+    """Apply CLAHE (Contrast Limited Adaptive Histogram Equalization) on the L channel
+    of the LAB color space to improve local contrast without amplifying noise."""
     lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
     l, a, b = cv2.split(lab)
     clahe = cv2.createCLAHE(clipLimit=1.012, tileGridSize=(26, 26))
     l_clahe = clahe.apply(l)
     return cv2.cvtColor(cv2.merge((l_clahe, a, b)), cv2.COLOR_LAB2BGR)
 
+
 def apply_sharpening(image):
-    """Sharpen image using a convolution kernel."""
+    """Sharpen the image by applying a convolution with a sharpening kernel.
+    This enhances edges and fine details."""
     kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]], dtype=np.float32)
     return cv2.filter2D(image, -1, kernel)
 
+
 def reduce_saturation(image, scale=0.9):
-    """Reduce image saturation by a specified factor."""
+    """Reduce the image saturation in the HSV color space by a specified factor.
+    Useful to slightly desaturate overly vibrant colors for a more natural appearance."""
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     hsv[..., 1] = np.clip(hsv[..., 1] * scale, 0, 255).astype(np.uint8)
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
 
 def image_enhancement_pipeline(image_path, save_folder):
-    """Process an image and calculate enhancement metrics."""
+    """Enhance a single image through resizing, denoising, contrast adjustment, desaturation,
+    sharpening, and normalization. Then calculate various quality metrics.
+    The final enhanced image is saved to disk."""
+
     image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
     if image is None:
         print(f"Error: Couldn't load the image from {image_path}")
@@ -73,8 +86,10 @@ def image_enhancement_pipeline(image_path, save_folder):
         "colorfulness": colorfulness,
     }
 
+
 def process_images_in_folder(folder_path, save_folder):
-    """Retrieve image paths from a folder."""
+    """Create the output folder if it doesn't exist, and return a list of image paths
+    (only valid image formats) from the specified input folder."""
     os.makedirs(save_folder, exist_ok=True)
     return [
         os.path.join(folder_path, fname)
@@ -82,8 +97,10 @@ def process_images_in_folder(folder_path, save_folder):
         if fname.lower().endswith((".jpg", ".png", ".jpeg", ".bmp"))
     ]
 
+
 def process_images_in_parallel(image_paths, save_folder, max_workers=8):
-    """Process images concurrently using ThreadPoolExecutor."""
+    """Process multiple images in parallel using threading to speed up the pipeline.
+    Each image is enhanced and its metrics are computed and stored."""
     results = []
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(image_enhancement_pipeline, img, save_folder): img for img in image_paths}
@@ -96,8 +113,10 @@ def process_images_in_parallel(image_paths, save_folder, max_workers=8):
                 print(f"Error processing {futures[future]}: {e}")
     return results
 
+
 def calculate_stats(results):
-    """Calculate mean and standard deviation for each metric using NumPy arrays."""
+    """Given a list of results, compute the mean and standard deviation
+    for each enhancement metric across all images."""
     if not results:
         return {}
 
@@ -106,10 +125,14 @@ def calculate_stats(results):
 
     return {metric: {"mean": np.mean(values), "std_dev": np.std(values)} for metric, values in metrics.items()}
 
+
 if __name__ == "__main__":
-    folder_path = "../Restormer/data/rain100L/train/rain/"
-    save_folder = "Resultados_finales_Img/Borrar/"
-    output_csv = "Resultados_finales_Img/borrar.csv"
+    """Main entry point: defines folder paths, launches the enhancement and evaluation process,
+    and saves the resulting metrics in a CSV file."""
+
+    folder_path = "enter_here_your_input_folder_path"  # Example: "path/to/your/input/images"
+    save_folder = "enter_here_your_output_folder_path"  # Example: "path/to/save/enhanced/images"
+    output_csv = "enter_here_your_output_csv_path"  # Example: "path/to/save/results.csv"
 
     start_time = time.time()
 
