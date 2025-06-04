@@ -18,11 +18,11 @@ El dispositivo incorpora una cámara en la punta de la sonda y una pantalla para
 ### Métricas para evaluar la mejora
 Para determinar el nivel adecuado de mejora en la calidad de las imágenes, es fundamental definir qué se entiende por buena calidad en una imagen endoscópica. Dado que el objetivo es facilitar el trabajo de guiado de la sonda a un profesional clínico, su criterio de calidad de imagen es clave para lograr la mejora. Como este criterio es difícil de describir con precisión por su componente subjetivo, se propone evaluar las imágenes desde otro enfoque. Por ese motivo, además de la opinión de los profesionales, también se han calculado métricas cuantitativas: 
 
-### Métricas con Referencia (Full-Reference, FR)
+#### Métricas con Referencia (Full-Reference, FR)
 
 Estas métricas comparan una imagen procesada con su versión original. Permiten cuantificar cuánto se ha degradado o mejorado una imagen tras aplicar una técnica de restauración. Se emplean en este proyecto para determinar qué métodos de mejora obtienen los mejores resultados en imágenes degradadas.
 
-#### Métricas de Fidelidad
+##### Métricas de Fidelidad
 
 Evalúan la similitud a nivel de píxel entre la imagen original (referencial) y la imagen generada.
 
@@ -31,7 +31,7 @@ Evalúan la similitud a nivel de píxel entre la imagen original (referencial) y
 | **MSE** | Error cuadrático medio: mide la diferencia promedio entre píxeles. | Valores cercanos a 0 (< 3) |
 | **PSNR** | Relación señal-ruido: compara la señal con el ruido de fondo. | Mayor a 30 dB |
 
-#### Métricas Perceptuales
+##### Métricas Perceptuales
 
 Tienen en cuenta la percepción visual humana, y evalúan cómo las diferencias afectan la calidad percibida.
 
@@ -42,11 +42,11 @@ Tienen en cuenta la percepción visual humana, y evalúan cómo las diferencias 
 
 ---
 
-### Métricas sin Referencia (No-Reference, NR)
+#### Métricas sin Referencia (No-Reference, NR)
 
 Estas métricas analizan únicamente la imagen degradada o restaurada, sin necesidad de comparación con una imagen original. Son útiles cuando no se dispone de una referencia, y se utilizan a lo largo del proyecto para valorar la mejora obtenida tras el procesamiento.
 
-#### Métricas Tradicionales
+##### Métricas Tradicionales
 
 | Métrica | Descripción | Valor deseable |
 |--------|-------------|----------------|
@@ -57,7 +57,7 @@ Estas métricas analizan únicamente la imagen degradada o restaurada, sin neces
 | **Calidad General** | Valoración perceptual global desde la perspectiva de un observador humano. | Evaluación subjetiva o combinada |
 | **Diversidad** | Representa la variabilidad de colores y texturas (calculada mediante entropía). | No se calcula directamente |
 
-#### Métricas Basadas en Redes Neuronales
+##### Métricas Basadas en Redes Neuronales
 
 Utilizan modelos entrenados para simular la percepción humana de la calidad visual.
 
