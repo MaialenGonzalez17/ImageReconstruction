@@ -1,9 +1,0 @@
-numpy
-opencv-python
-matplotlib
-scikit-image
-opencv-contrib-python
-cv2
-pandas
-os
-torch
