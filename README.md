@@ -1,8 +1,6 @@
 # practicas_mgonzalezp
 
-Este repositorio recoge las prácticas de Maialen Gonzalez Pancorbo de MU desde Noviembre 2024 - Julio 2025.
-
-El objetivo principal de este proyecto es desarrollar un algoritmo que mejore la calidad de las imágenes de una sonda transvaginal, para luego combinarlo con un modelo de detección que permita visualizar el cérvix en tiempo real. 
+El objetivo principal de este proyecto es desarrollar un algoritmo que mejore la calidad de las imágenes de la cámara de una sonda transvaginal, para luego combinarlo con un modelo de detección que permita visualizar el cérvix en tiempo real. 
 
 ## Experimentación de mejora de calidad de imagen
 
