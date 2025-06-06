@@ -71,7 +71,7 @@ Realizar una mejora de la calidad de imagen es fundamental para lograr los mejor
 
 - **[Algoritmo basado en aprendizaje profundo](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/Algoritmo%20basado%20en%20aprendizaje%20profundo)**.
 
-Para visualizar el funcionamiento de ambos algoritmos de un modo dinámico:
+Para visualizar el funcionamiento de ambos algoritmos de forma dinámica, puede acceder a la siguiente interfaz de visualización de resultados:
 - **[Interfaz para la visualización de resultados](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/Interfaz%20para%20la%20visualizaci%C3%B3n%20de%20resultados?ref_type=heads)** ⏩ https://img-reconstruction-zk7tqhrbjkzrdah79lj2ex.streamlit.app/
 
 
