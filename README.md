@@ -1,4 +1,4 @@
-# Image reconstruction techniques
+# IMAGE RECONSTRUCTION
 
 The main objective of this project is to develop an algorithm that improves the quality of the images from a transvaginal probe camera.
 
