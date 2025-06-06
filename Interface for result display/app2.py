@@ -3,7 +3,7 @@ from PIL import Image
 import torch, lpips, cv2, time, numpy as np
 import plotly.graph_objects as go
 import torchvision.transforms as transforms
-from Funciones_app import (cargar_imagen, tensor_a_pil, aplicar_transformacion_especifica,
+from Functions_app import (cargar_imagen, tensor_a_pil, aplicar_transformacion_especifica,
                            calcular_metricas_normalizadas, calculate_1image_metrics,
                            explicaciones_degradaciones, todas, image_enhancement_pipeline, dispositivo, ConvAutoencoder)
 from design import cabecera_html, estilos_css_tradicional, mostrar_conocimientos_basicos, mostrar_footer, mostrar_conocimientos_autoencoder
