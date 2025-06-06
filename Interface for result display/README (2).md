@@ -49,7 +49,7 @@ For videos:
 
 ## Display and Explanations
 
-- Explanations** are included for each degradation applied, obtained from a predefined dictionary.
+- **Explanations** are included for each degradation applied, obtained from a predefined dictionary.
 - Metrics and results are clearly organized for easy interpretation by the user.
 
 ## Imported Files and Modules
@@ -64,8 +64,8 @@ The script depends on several custom files and modules:
 The user interface is organized in three columns for each processing:
 
 - **Column 1**: Original image.
-- Column 2**: Degraded image (with a specific transformation).
-- Column 3**: Restored image.
+- **Column 2**: Degraded image (with a specific transformation).
+- **Column 3**: Restored image.
 
 ## Device
 
