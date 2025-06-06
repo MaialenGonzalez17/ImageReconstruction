@@ -66,3 +66,67 @@ train(
     val_ratio=0.15,
     save_path="weights"  # Folder where models and records will be saved
 )
+````
+# 🤖 Comparativa de Métricas: Degradada vs IA
+
+## 🔍 Métricas Sin Referencia (SR)
+
+<div style="overflow-x: auto">
+
+| Transformación             | Métrica        | Degradada (D) | IA              |
+|---------------------------|----------------|----------------|------------------|
+| Desenfoque Gaussiano      | Entropía       | **7.21**       | 7.07             |
+|                           | Contraste (%)  | **20.98**      | 19.11            |
+|                           | Nitidez (%)    | 2.91           | **4.98**         |
+|                           | Colorido (%)   | 44.35          | **45.78**        |
+|                           | Brisque        | **0.72**       | 0.70             |
+|                           | Niqe           | 0.64           | **0.57**         |
+|                           | Nima           | **2.33**       | 2.25             |
+| Ruido Gaussiano           | Entropía       | **7.64**       | 6.97             |
+|                           | Contraste (%)  | **20.67**      | 14.98            |
+|                           | Nitidez (%)    | **100**        | **100**          |
+|                           | Colorido (%)   | **54.32**      | 37.07            |
+|                           | Brisque        | **0.72**       | 0.43             |
+|                           | Niqe           | **0.40**       | 0.53             |
+|                           | Nima           | **6.34**       | 3.19             |
+| Movimiento Involuntario   | Entropía       | **7.10**       | 6.95             |
+|                           | Contraste (%)  | **20.51**      | 18.47            |
+|                           | Nitidez (%)    | 13.85          | **15.10**        |
+|                           | Colorido (%)   | 45.82          | **46.00**        |
+|                           | Brisque        | **0.51**       | 0.50             |
+|                           | Niqe           | 0.61           | **0.58**         |
+|                           | Nima           | **2.41**       | 2.32             |
+| Iluminación y contraste   | Entropía       | **7.01**       | 6.91             |
+|                           | Contraste (%)  | **21.05**      | 19.42            |
+|                           | Nitidez (%)    | **67.60**      | 40.61            |
+|                           | Colorido (%)   | 47.19          | **48.09**        |
+|                           | Brisque        | **0.20**       | 0.29             |
+|                           | Niqe           | 0.63           | **0.59**         |
+|                           | Nima           | **2.87**       | 2.48             |
+
+</div>
+
+## 📊 Métricas Con Referencia (CR)
+
+<div style="overflow-x: auto">
+
+| Transformación             | Métrica    | Degradada (D) | IA              |
+|---------------------------|------------|----------------|------------------|
+| Desenfoque Gaussiano      | PSNR       | **35.81**      | 30.97            |
+|                           | SSIM       | **0.88**       | **0.88**         |
+|                           | MSE        | **18.91**      | 53.71            |
+|                           | LPIPS      | **0.16**       | 0.15             |
+| Ruido Gaussiano           | PSNR       | 28.12          | **28.50**        |
+|                           | SSIM       | 0.14           | **0.60**         |
+|                           | MSE        | 100.34         | **92.93**        |
+|                           | LPIPS      | 0.75           | **0.39**         |
+| Movimiento Involuntario   | PSNR       | **36.82**      | 30.82            |
+|                           | SSIM       | **0.89**       | 0.88             |
+|                           | MSE        | **16.05**      | 56.27            |
+|                           | LPIPS      | **0.07**       | **0.07**         |
+| Iluminación y contraste   | PSNR       | 29.61          | 29.61            |
+|                           | SSIM       | **0.93**       | 0.92             |
+|                           | MSE        | 84.23          | **76.76**        |
+|                           | LPIPS      | **0.01**       | 0.02             |
+
+</div>
