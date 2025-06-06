@@ -36,7 +36,7 @@ They take into account human visual perception, and evaluate how differences aff
 | Metrics | Description  | Desired value  |
 |--------|-------------|----------------|
 | **SSIM** | Structural Similarity Index: evaluates structural similarity, luminance and contrast. | Above 0.85 (range 0-1) |
-| **LPIPS** | Learned Perceptual Image Patch Similarity: measures perceptual similarity using neural networks. Low values (< 0.2) | 
+| **LPIPS** | Learned Perceptual Image Patch Similarity: measures perceptual similarity using neural networks.| Low values (< 0.2) | 
 
 ---
 
