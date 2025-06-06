@@ -67,11 +67,11 @@ Use trained models to simulate human perception of visual quality.
 
 Performing image quality enhancement is essential to achieve the best possible visual and quantitative results. Two types of processing methods have been proposed to enhance medical images:   
 
-- **[Traditional methods-based algorithms](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/TFG_mgonzalezp/Algoritmo%20basado%20en%20m%C3%A9todos%20tradicionales)**.
+- **[Traditional methods-based algorithms](https://github.com/MaialenVicom/ImageReconstruction/tree/main/Algorithm%20based%20on%20traditional%20methods)**.
 
-- **[Deep learning based algorithm](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/Algoritmo%20basado%20en%20aprendizaje%20profundo)**.
+- **[Deep learning based algorithm](https://github.com/MaialenVicom/ImageReconstruction/tree/main/Algorithm%20based%20on%20deep%20learning)**.
 
 To visualize the performance of both algorithms dynamically, you can access the following result visualization interface:
-- **[Results visualization interface](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/Interfaz%20para%20la%20visualizaci%C3%B3n%20de%20resultados?ref_type=heads)** ⏩ https://img-reconstruction-zk7tqhrbjkzrdah79lj2ex.streamlit.app/
+- **[Results visualization interface](https://github.com/MaialenVicom/ImageReconstruction/tree/main/Interface%20for%20result%20display)** ⏩ https://img-reconstruction-zk7tqhrbjkzrdah79lj2ex.streamlit.app/
 
 
