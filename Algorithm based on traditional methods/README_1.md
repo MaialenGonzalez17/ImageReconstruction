@@ -16,10 +16,10 @@ This script performs a complete image enhancement process based on classical ima
    Several classic techniques are applied to improve visual quality:
 
    - **Median filtering** to reduce impulsive noise.
-   - CLAHE** adaptive histogram equalization in the LAB color space to improve local contrast without saturating colors.
-   - Saturation reduction** to soften vivid colors, increasing naturalness.
-   - Sharpening filtering** using a convolution kernel to enhance edges and details.
-   - Normalization** of pixel values to ensure optimal dynamic range.
+   - **CLAHE** adaptive histogram equalization in the LAB color space to improve local contrast without saturating colors.
+   - **Saturation reduction** to soften vivid colors, increasing naturalness.
+   - **Sharpening filtering** using a convolution kernel to enhance edges and details.
+   - **Normalization** of pixel values to ensure optimal dynamic range.
 
 3. **Saving and metrics calculation**.
 
