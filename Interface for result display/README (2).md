@@ -1,79 +1,75 @@
-# practicas_mgonzalezp
+# Image Restoration Application with Streamlit
 
-Este repositorio recoge las prácticas de Maialen Gonzalez Pancorbo de MU desde Noviembre 2024 - Julio 2025.
+This script implements an interactive application with **Streamlit** to restore degraded images and videos, using two approaches: **traditional methods** and **artificial intelligence (AI)-based models**.
 
-El objetivo principal de este proyecto es desarrollar un algoritmo que mejore la calidad de las imágenes de una sonda transvaginal, para luego combinarlo con un modelo de detección que permita visualizar el cérvix en tiempo real. 
+## Main functionalities
 
-## Experimentación de mejora de calidad de imagen
+- Web interface for image and video restoration.
+- Comparison between original, degraded and restored images.
+- Display of quality metrics with and without reference.
+- Use of a convolutional autoencoder (AI) model for restoration.
+- Restoration alternative based on a traditional enhancement pipeline.
+- Support for image or video input.
 
-### Contexto
-El dispositivo incorpora una cámara en la punta de la sonda y una pantalla para mostrar imágenes en tiempo real. Sin embargo, diversos factores afectan la calidad de estas imágenes, los cuales pueden clasificarse en tres categorías:
+## Model loading
 
-1. Factores asociados al hardware: Incluyen limitaciones en las dimensiones físicas del sensor, que reducen la captación de luz y afectan la relación señal-ruido (SNR); distorsión geométrica debido a la lente gran angular, que altera la forma de las estructuras capturadas; y retraso en la transmisión, lo que puede dificultar procedimientos médicos en tiempo real.
+A pre-trained **autoencoder convolutional** model is loaded from a `checkpoint.pt` and GPU usage is set if available. The model is used in inference mode (`eval()`).
 
-2. Factores del entorno clínico: La presencia de un profiláctico en el dispositivo puede generar reflejos y distorsiones ópticas, mientras que la humedad y los fluidos biológicos pueden ensuciar la lente, afectando la nitidez de la imagen.
+## Method Selection
 
-3. Factores de captura de imagen: Incluyen ruido generado por el sistema de captura (artefactos de movimiento y compresión), iluminación inadecuada (excesiva, insuficiente o no uniforme), bajo contraste que dificulta la diferenciación de tejidos, y problemas de color debido a las limitaciones de los sensores digitales, lo que puede generar tonos alterados y sombras no deseadas.
+The user can choose between two restoration methods:
 
-### Métricas para evaluar la mejora
-Para determinar el nivel adecuado de mejora en la calidad de las imágenes, es fundamental definir qué se entiende por buena calidad en una imagen endoscópica. Dado que el objetivo es facilitar el trabajo de guiado de la sonda a un profesional clínico, su criterio de calidad de imagen es clave para lograr la mejora. Como este criterio es difícil de describir con precisión por su componente subjetivo, se propone evaluar las imágenes desde otro enfoque. Por ese motivo, además de la opinión de los profesionales, también se han calculado métricas cuantitativas: 
+- **Traditional**: processing using a classical image enhancement pipeline.
+- **IA**: processing by a convolutional autoencoder.
 
-#### Métricas con Referencia (Full-Reference, FR)
+## Processing Flow
 
-Estas métricas comparan una imagen procesada con su versión original. Permiten cuantificar cuánto se ha degradado o mejorado una imagen tras aplicar una técnica de restauración. Se emplean en este proyecto para determinar qué métodos de mejora obtienen los mejores resultados en imágenes degradadas.
+### 1. Image Restoration
 
-##### Métricas de Fidelidad
+For each degraded image generated from an original one:
 
-Evalúan la similitud a nivel de píxel entre la imagen original (referencial) y la imagen generada.
+- A specific transformation is applied.
+- The restored image is generated, either with AI or with the traditional method.
+- The three versions are displayed in columns: Original, Degraded and Restored.
+- Quality metrics are calculated and displayed:
 
-| Métrica | Descripción | Valor deseable |
-|--------|-------------|----------------|
-| **MSE** | Error cuadrático medio: mide la diferencia promedio entre píxeles. | Valores cercanos a 0 (< 3) |
-| **PSNR** | Relación señal-ruido: compara la señal con el ruido de fondo. | Mayor a 30 dB |
+  - **With reference**: SSIM, PSNR, MSE, LPIPS (compare to original image).
+  - Without reference**: Entropy, Sharpness, Contrast, Color, BRISQUE, NIQE, NIMA (without the need of the original image).
 
-##### Métricas Perceptuales
+- Metrics are presented by means of spider chart type radial graphs.
 
-Tienen en cuenta la percepción visual humana, y evalúan cómo las diferencias afectan la calidad percibida.
+### 2. Video Restoration
 
-| Métrica | Descripción | Valor deseable |
-|--------|-------------|----------------|
-| **SSIM** | Índice de similitud estructural: evalúa similitud estructural, luminancia y contraste. | Superior a 0.85 (rango 0–1) |
-| **LPIPS** | Learned Perceptual Image Patch Similarity: mide la similitud perceptual usando redes neuronales. | Valores bajos (< 0.2) |
+For videos:
 
----
+- The video frames are captured using OpenCV.
+- For each frame, the same degradations are applied as for the images.
+- The restored frames are processed in parallel and displayed using Streamlit placeholders.
+- The display is limited to 100 frames by default.
 
-#### Métricas sin Referencia (No-Reference, NR)
+## Display and Explanations
 
-Estas métricas analizan únicamente la imagen degradada o restaurada, sin necesidad de comparación con una imagen original. Son útiles cuando no se dispone de una referencia, y se utilizan a lo largo del proyecto para valorar la mejora obtenida tras el procesamiento.
+- Explanations** are included for each degradation applied, obtained from a predefined dictionary.
+- Metrics and results are clearly organized for easy interpretation by the user.
 
-##### Métricas Tradicionales
+## Imported Files and Modules
 
-| Métrica | Descripción | Valor deseable |
-|--------|-------------|----------------|
-| **Entropía** | Mide la cantidad de información presente en la imagen. | Mayor a 7 (rango 0–8) |
-| **Contraste** | Calcula la variación del brillo entre áreas. | Entre 40–70% (rango 0–100) |
-| **Nitidez** | Indica la claridad de los bordes y detalles. | Entre 60–70% (rango 0–100) |
-| **Colorido** | Mide la saturación y gama de colores. | Alrededor del 50% (rango 0–100) |
+The script depends on several custom files and modules:
 
-##### Métricas Basadas en Redes Neuronales
+- `Functions_app.py`: contains key functions such as image loading, transformations, metrics, and the traditional pipeline.
+- design.py`: provides visual elements such as HTML header, CSS styles and explanatory content about basic knowledge or autoencoders.
 
-Utilizan modelos entrenados para simular la percepción humana de la calidad visual.
+## User Interface
 
-| Métrica | Descripción | Valor deseable |
-|--------|-------------|----------------|
-| **BRISQUE** | Analiza la imagen imitando la percepción del ojo humano. | Más bajo es mejor (óptimo → 0, ideal < 0.2) |
-| **NIQE** | Compara la imagen con un modelo estadístico basado en imágenes naturales. | Más bajo es mejor (óptimo → 0, ideal < 0.2) |
-| **NIMA** | Puntuación generada por una red neuronal en función de la percepción humana. | 1–4: Baja calidad, 4–7: Aceptable, 7–10: Alta calidad |
+The user interface is organized in three columns for each processing:
 
-## Contenido
+- **Column 1**: Original image.
+- Column 2**: Degraded image (with a specific transformation).
+- Column 3**: Restored image.
 
-Realizar una mejora de la calidad de imagen es fundamental para lograr los mejores resultados visuales y cuantitativos posibles. Se han propuesto dos tipos de métodos de procesamiento para mejorar las imágenes médicas:   
+## Device
 
-- **[Algoritmo de basado en métodos tradiconales](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/TFG_mgonzalezp/Algoritmo%20basado%20en%20m%C3%A9todos%20tradicionales)**.
+The device (CPU or GPU) is automatically determined using PyTorch:
 
-- **[Algoritmo basado en aprendizaje profundo](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/Algoritmo%20basado%20en%20aprendizaje%20profundo)**.
-
-Para visualizar el funcionamiento de ambos algoritmos de forma dinámica, puede acceder a la siguiente interfaz de visualización de resultados:
-- **[Interfaz para la visualización de resultados](https://gitlab.com/vicomtech/v6/projects/VISUALIZE_INNITIUS/practicas_mgonzalezp/-/tree/develop/Interfaz%20para%20la%20visualizaci%C3%B3n%20de%20resultados?ref_type=heads)**.
-
-
+````python
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
