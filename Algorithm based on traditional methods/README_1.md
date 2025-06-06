@@ -1,73 +1,73 @@
-# Descripción del código de mejora de imagen sin IA
+# Description of the image enhancement code without AI
 
-Este script realiza un proceso completo de mejora de imágenes basado en técnicas clásicas de procesamiento de imagen, sin usar inteligencia artificial. A continuación se explica su funcionamiento paso a paso:
+This script performs a complete image enhancement process based on classical image processing techniques, without using artificial intelligence. Below is a step-by-step explanation of how it works:
 
 ---
 
-## Funcionalidad principal
+## Main functionality
 
-1. **Carga y preprocesamiento de imágenes**
+1. **Loads and preprocesses images**.
 
-   - Lee imágenes desde una carpeta especificada.
-   - Redimensiona cada imagen a un tamaño fijo de 320x320 píxeles para uniformidad.
+   - Reads images from a specified folder.
+   - Resizes each image to a fixed size of 1024x1365 pixels for uniformity. #resize to your liking 
 
-2. **Procesos de mejora de imagen**
+2. **Image enhancement processes**.
 
-   Se aplican varias técnicas clásicas para mejorar la calidad visual:
+   Several classic techniques are applied to improve visual quality:
 
-   - **Filtro de mediana** para reducir ruido impulsivo.
-   - **Ecualización de histograma adaptativa CLAHE** en el espacio de color LAB para mejorar el contraste local sin saturar colores.
-   - **Reducción de saturación** para suavizar colores intensos, aumentando naturalidad.
-   - **Filtro de nitidez (sharpening)** mediante un kernel de convolución para realzar bordes y detalles.
-   - **Normalización** de valores de píxeles para asegurar rango dinámico óptimo.
+   - **Median filtering** to reduce impulsive noise.
+   - CLAHE** adaptive histogram equalization in the LAB color space to improve local contrast without saturating colors.
+   - Saturation reduction** to soften vivid colors, increasing naturalness.
+   - Sharpening filtering** using a convolution kernel to enhance edges and details.
+   - Normalization** of pixel values to ensure optimal dynamic range.
 
-3. **Guardado y cálculo de métricas**
+3. **Saving and metrics calculation**.
 
-   - Guarda las imágenes mejoradas en una carpeta destino.
-   - Calcula métricas clásicas de calidad de imagen comparando la imagen original con la mejorada:
-     - PSNR (Peak Signal-to-Noise Ratio)
+   - Saves enhanced images to a target folder.
+   - Calculates classic image quality metrics by comparing the original image with the enhanced image:
+     - PSNR (Peak Signal-to-Noise Ratio).
      - SSIM (Structural Similarity Index)
      - MSE (Mean Squared Error)
-   - Calcula métricas sin referencia sobre la imagen mejorada:
-     - Entropía (medida de información/ruido)
-     - Nitidez
-     - Contraste
-     - Colorfulness (vibrancia de colores)
+   - Calculates non-reference metrics on the enhanced image:
+     - Entropy (information/noise measure).
+     - Sharpness
+     - Contrast
+     - Colorfulness (color vibrancy)
 
-4. **Ejecución paralela**
+4. **Parallel execution**.
 
-   - Procesa múltiples imágenes simultáneamente usando `ThreadPoolExecutor` para acelerar el procesamiento.
+   - Process multiple images simultaneously using `ThreadPoolExecutor` to speed up processing.
 
-5. **Resumen estadístico**
+5. **Statistical summary**
 
-   - Al final, calcula la media y desviación estándar de todas las métricas obtenidas para evaluar globalmente el desempeño del proceso.
-   - Guarda los resultados completos en un fichero CSV para análisis posterior.
+   - At the end, calculate the mean and standard deviation of all metrics obtained to globally evaluate the performance of the process.
+   - Save the complete results in a CSV file for further analysis.
 
-6. **Tiempos de ejecución**
+6. **Execution times**.
 
-   - Muestra el tiempo total de procesamiento y el tiempo promedio por imagen.
-
----
-
-## Resumen de funciones clave
-
-- `resize_image`: Cambia el tamaño de la imagen a 320x320.
-- `apply_median_filter`: Aplica filtro de mediana para eliminar ruido.
-- `clahe_lab`: Mejora el contraste local en espacio LAB con CLAHE.
-- `reduce_saturation`: Disminuye la saturación para suavizar colores.
-- `apply_sharpening`: Realza detalles con filtro de nitidez.
-- `image_enhancement_pipeline`: Aplica toda la cadena de mejora y calcula métricas.
-- `process_images_in_folder`: Obtiene rutas de imágenes válidas de una carpeta.
-- `process_images_in_parallel`: Ejecuta la mejora en paralelo.
-- `calculate_stats`: Calcula medias y desviaciones estándar de métricas.
+   - Displays the total processing time and average time per image.
 
 ---
 
-## Uso
+## Summary of key functions
 
-Configurar las rutas de entrada y salida en:
+- `resize_image`: Resize image to 320x320.
+- `apply_median_filter`: Apply median filter to remove noise.
+- `clahe_lab`: Improve local contrast in LAB space with CLAHE.
+- `reduce_saturation`: Decrease saturation to soften colors.
+- `apply_sharpening`: Enhance details with sharpening filter.
+- `image_enhancement_pipeline`: Applies the whole enhancement chain and calculates metrics.
+- `process_images_in_folder`: Get valid image paths from a folder.
+- `process_images_in_parallel`: Runs the enhancement in parallel.
+- `calculate_stats`: Calculates means and standard deviations of metrics.
 
-```python
-folder_path = "carpeta_de_imagenes_entrada/"
-save_folder = "carpeta_de_imagenes_mejoradas/"
-output_csv = "ruta_resultados/resultados.csv"
+---
+
+## Usage
+
+Set input and output paths in:
+
+````python
+folder_path = "input_images_folder/"
+save_folder = "enhanced_images_folder/"
+output_csv = "results_path/results.csv"
