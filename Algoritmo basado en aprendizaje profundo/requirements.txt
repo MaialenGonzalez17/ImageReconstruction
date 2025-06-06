@@ -1,8 +1,0 @@
-torch>=1.10
-numpy
-pandas
-openpyxl
-opencv-python
-matplotlib
-albumentations
-scikit-image
