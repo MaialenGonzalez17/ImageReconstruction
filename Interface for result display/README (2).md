@@ -42,10 +42,12 @@ For each degraded image generated from an original one:
 
 For videos:
 
-- The video frames are captured using OpenCV.
-- For each frame, the same degradations are applied as for the images.
-- The restored frames are processed in parallel and displayed using Streamlit placeholders.
-- The display is limited to 100 frames by default.
+Videos are loaded from the gallery.
+
+- Each video frame is extracted and processed.
+- The same degradations applied to images are applied to each frame.
+- Restored frames are processed in parallel and displayed using Streamlit placeholders.
+- By default, the display is limited to 100 frames.
 
 ## Display and Explanations
 
