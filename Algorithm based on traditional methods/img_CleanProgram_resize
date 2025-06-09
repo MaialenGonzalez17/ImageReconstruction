@@ -17,7 +17,7 @@ def resize_image(image, target_size=(320, 320)):
     return cv2.resize(image, target_size, interpolation=cv2.INTER_AREA)
 
 def apply_median_filter(image, ksize=3):
-    """Apply Median filter to reduce noise."""
+    """Apply median filter to reduce noise."""
     return cv2.medianBlur(image, ksize)
 
 def clahe_lab(image):
@@ -34,17 +34,16 @@ def apply_sharpening(image):
     return cv2.filter2D(image, -1, kernel)
 
 def reduce_saturation(image, scale=0.9):
-    """Reduce image saturation by a specified factor."""
+    """Reduce image saturation by a given factor."""
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     hsv[..., 1] = np.clip(hsv[..., 1] * scale, 0, 255).astype(np.uint8)
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
-
 def image_enhancement_pipeline(image_path, save_folder):
-    """Process an image and calculate enhancement metrics."""
+    """Process an image applying enhancement steps, save result, and calculate metrics."""
     image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
     if image is None:
-        print(f"Error: Couldn't load the image from {image_path}")
+        print(f"Error: Could not load image {image_path}")
         return None
 
     image = resize_image(image)
@@ -74,7 +73,7 @@ def image_enhancement_pipeline(image_path, save_folder):
     }
 
 def process_images_in_folder(folder_path, save_folder):
-    """Retrieve image paths from a folder."""
+    """Get image file paths from a folder."""
     os.makedirs(save_folder, exist_ok=True)
     return [
         os.path.join(folder_path, fname)
@@ -97,7 +96,7 @@ def process_images_in_parallel(image_paths, save_folder, max_workers=8):
     return results
 
 def calculate_stats(results):
-    """Calculate mean and standard deviation for each metric using NumPy arrays."""
+    """Calculate mean and standard deviation for each metric."""
     if not results:
         return {}
 
@@ -107,9 +106,15 @@ def calculate_stats(results):
     return {metric: {"mean": np.mean(values), "std_dev": np.std(values)} for metric, values in metrics.items()}
 
 if __name__ == "__main__":
-    folder_path = "Public BDD (Intel)/test/test_augmented/tfg_resultados/"
-    save_folder = "Resultados_finales_Img/Resultados_Img_Sin_IA/"
-    output_csv = "Resultados_finales_Img/Resultados_Img_Sin_IA/Img_mejoradas_sin_IA.csv"
+    """
+    Setup:
+    - Define input images folder.
+    - Define folder to save processed images.
+    - Define CSV output file for saving metrics.
+    """
+    folder_path = ""  # <-- Input images folder
+    save_folder = ""  # <-- Folder to save processed images
+    output_csv = ""   # <-- CSV file path to save metrics
 
     start_time = time.time()
 
@@ -129,5 +134,5 @@ if __name__ == "__main__":
     else:
         print("No valid images were processed.")
 
-    print(f"Total Execution Time: {total_time:.2f} seconds")
-    print(f"Average Time per Image: {avg_time_per_image:.2f} seconds")
+    print(f"Total execution time: {total_time:.2f} seconds")
+    print(f"Average time per image: {avg_time_per_image:.2f} seconds")
