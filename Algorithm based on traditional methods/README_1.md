@@ -106,24 +106,25 @@ output_csv = "results_path/results.csv"
 
 <div style="overflow-x: auto">
 
-| Transformación              | Comparación             | PSNR  | SSIM  | MSE    | LPIPS |
-|----------------------------|-------------------------|-------|-------|--------|--------|
-| Desenfoque Gaussiano       | Original - Degradada    | **35.81** | **0.88** | **18.91** | 0.16  |
-|                            | Original - Restaurada   | 29.27 | 0.82  | 77.72  | **0.13** |
-| Ruido Gaussiano            | Original - Degradada    | **28.12** | 0.14  | **100.34** | 0.75  |
-|                            | Original - Restaurada   | 28.10 | **0.20**  | 100.64 | **0.72** |
-| Movimiento Involuntario    | Original - Degradada    | **36.82** | **0.89** | **16.05** | 0.07  |
-|                            | Original - Restaurada   | 29.58 | 0.81  | 72.50  | **0.09** |
-| Iluminación y contraste    | Original - Degradada    | 29.61 | **0.93** | 84.23  | **0.01** |
-|                            | Original - Restaurada   | **29.98** | 0.81  | **83.93** | 0.07  |
-| Iluminación desigual       | Original - Degradada    | **31.98** | **0.96** | **45.13** | **0.02** |
-|                            | Original - Restaurada   | 29.47 | 0.81  | 74.94  | 0.08  |
-| Sombras aleatorias         | Original - Degradada    | 28.45 | 0.82  | 95.35  | **0.09** |
-|                            | Original - Restaurada   | **29.16** | **0.82**  | **82.06** | 0.11  |
-| Reflejos especulares       | Original - Degradada    | **39.23** | **0.95** | **8.25**  | **0.07** |
-|                            | Original - Restaurada   | 29.48 | 0.81  | 73.91  | 0.14  |
-| Defectos del preservativo  | Original - Degradada    | **41.08** | **0.94** | **5.52**  | **0.10** |
-|                            | Original - Restaurada   | 29.58 | 0.80  | 72.95  | 0.18  |
+| Transformation             | Comparison               | PSNR   | SSIM   | MSE     | LPIPS |
+|---------------------------|---------------------------|--------|--------|---------|--------|
+| Gaussian Blur             | Original - Degraded       | **35.81** | **0.88** | **18.91**  | 0.16  |
+|                           | Original - Restored       | 29.27  | 0.82   | 77.72   | **0.13** |
+| Gaussian Noise            | Original - Degraded       | **28.12** | 0.14   | **100.34** | 0.75  |
+|                           | Original - Restored       | 28.10  | **0.20**  | 100.64  | **0.72** |
+| Involuntary Motion        | Original - Degraded       | **36.82** | **0.89** | **16.05**  | 0.07  |
+|                           | Original - Restored       | 29.58  | 0.81   | 72.50   | **0.09** |
+| Illumination & Contrast   | Original - Degraded       | 29.61  | **0.93** | 84.23   | **0.01** |
+|                           | Original - Restored       | **29.98** | 0.81   | **83.93**  | 0.07  |
+| Uneven Illumination       | Original - Degraded       | **31.98** | **0.96** | **45.13**  | **0.02** |
+|                           | Original - Restored       | 29.47  | 0.81   | 74.94   | 0.08  |
+| Random Shadows            | Original - Degraded       | 28.45  | 0.82   | 95.35   | **0.09** |
+|                           | Original - Restored       | **29.16** | **0.82**  | **82.06**  | 0.11  |
+| Specular Reflections      | Original - Degraded       | **39.23** | **0.95** | **8.25**   | **0.07** |
+|                           | Original - Restored       | 29.48  | 0.81   | 73.91   | 0.14  |
+| Condom Defects            | Original - Degraded       | **41.08** | **0.94** | **5.52**   | **0.10** |
+|                           | Original - Restored       | 29.58  | 0.80   | 72.95   | 0.18  |
+
 
 
 
