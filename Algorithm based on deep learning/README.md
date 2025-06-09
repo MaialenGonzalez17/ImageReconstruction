@@ -67,7 +67,7 @@ train(
     save_path="weights"  # Folder where models and records will be saved
 )
 ````
-# 🤖 Metric Comparison: Degraded vs AI 
+# Metric Comparison: Degraded vs AI 
 
 ## 🔍 No-Reference Metrics (NR)
 
