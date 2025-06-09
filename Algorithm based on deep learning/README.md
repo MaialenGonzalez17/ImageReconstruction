@@ -73,15 +73,25 @@ train(
 
 <div style="overflow-x: auto">
 
-| Metric / Transformation       | D: Gauss | AI: Gauss | D: Noise | AI: Noise | D: Motion | AI: Motion | D: Light | AI: Light |
-|------------------------------|----------|-----------|----------|-----------|-----------|------------|----------|-----------|
-| Entropy                      | **7.21** | 7.07      | **7.64** | 6.97      | **7.10**  | 6.95       | **7.01** | 6.91      |
-| Contrast (%)                 | **20.98**| 19.11     | **20.67**| 14.98     | **20.51** | 18.47      | **21.05**| 19.42     |
-| Sharpness (%)                | 2.91     | **4.98**  | **100**  | **100**   | 13.85     | **15.10**  | **67.60**| 40.61     |
-| Colorfulness (%)             | 44.35    | **45.78** | **54.32**| 37.07     | 45.82     | **46.00**  | 47.19    | **48.09** |
-| BRISQUE                      | **0.72** | 0.70      | **0.72** | 0.43      | **0.51**  | 0.50       | **0.20** | 0.29      |
-| NIQE                         | 0.64     | **0.57**  | **0.40** | 0.53      | 0.61      | **0.58**   | 0.63     | **0.59**  |
-| NIMA                         | **2.33** | 2.25      | **6.34** | 3.19      | **2.41**  | 2.32       | **2.87** | 2.48      |
+| Transformación               | Tipo       | Entropía | Contraste (%) | Nitidez (%) | Colorido (%) | BRISQUE | NIQE  | NIMA  |
+|-----------------------------|------------|----------|----------------|--------------|----------------|---------|-------|-------|
+| Desenfoque Gaussiano        | Degradada  | 7.21     | 20.98          | 2.91         | 44.35          | 0.72    | 0.64  | 2.33  |
+|                             | Restaurada | 7.07     | 19.11          | 4.98         | 45.78          | 0.70    | 0.57  | 2.25  |
+| Ruido Gaussiano             | Degradada  | 7.64     | 20.67          | 100.00       | 54.32          | 0.72    | 0.40  | 6.34  |
+|                             | Restaurada | 6.97     | 14.98          | 100.00       | 37.07          | 0.43    | 0.53  | 3.19  |
+| Movimiento Involuntario     | Degradada  | 7.10     | 20.51          | 13.85        | 45.82          | 0.51    | 0.61  | 2.41  |
+|                             | Restaurada | 6.95     | 18.47          | 15.10        | 46.00          | 0.50    | 0.58  | 2.32  |
+| Iluminación y Contraste     | Degradada  | 7.01     | 21.05          | 67.60        | 47.19          | 0.20    | 0.63  | 2.87  |
+|                             | Restaurada | 6.91     | 19.42          | 40.61        | 48.09          | 0.29    | 0.59  | 2.48  |
+| Iluminación Desigual        | Degradada  | 7.11     | 26.72          | 88.38        | 42.89          | 0.17    | 0.67  | 3.69  |
+|                             | Restaurada | 6.95     | 24.34          | 61.35        | 42.63          | 0.27    | 0.64  | 3.11  |
+| Sombras Aleatorias          | Degradada  | 6.50     | 14.78          | 60.15        | 27.90          | 0.26    | 0.78  | 2.15  |
+|                             | Restaurada | 6.48     | 15.00          | 39.28        | 30.60          | 0.29    | 0.73  | 2.14  |
+| Reflejos Especulares        | Degradada  | 7.18     | 21.46          | 81.92        | 48.82          | 0.15    | 0.62  | 2.86  |
+|                             | Restaurada | 7.03     | 19.54          | 46.65        | 49.30          | 0.26    | 0.58  | 2.48  |
+| Defectos del Preservativo   | Degradada  | 7.14     | 21.53          | 91.09        | 47.56          | 0.10    | 0.60  | 3.25  |
+|                             | Restaurada | 7.00     | 19.77          | 74.91        | 48.01          | 0.19    | 0.57  | 2.70  |
+
 
 </div>
 
@@ -89,11 +99,24 @@ train(
 
 <div style="overflow-x: auto">
 
-| Metric / Transformation | D: Gauss | AI: Gauss | D: Noise | AI: Noise | D: Motion | AI: Motion | D: Light | AI: Light |
-|-------------------------|----------|-----------|----------|-----------|-----------|------------|----------|-----------|
-| PSNR                    | **35.81**| 30.97     | 28.12    | **28.50** | **36.82** | 30.82      | 29.61    | 29.61     |
-| SSIM                    | **0.88** | **0.88**  | 0.14     | **0.60**  | **0.89**  | 0.88       | **0.93** | 0.92      |
-| MSE                     | **18.91**| 53.71     | 100.34   | **92.93** | **16.05** | 56.27      | 84.23    | **76.76** |
-| LPIPS                   | **0.16** | 0.15      | 0.75     | **0.39**  | **0.07**  | **0.07**   | **0.01** | 0.02      |
+| Transformación             | Comparación              | PSNR  | SSIM  | MSE    | LPIPS |
+|---------------------------|--------------------------|-------|-------|--------|--------|
+| Desenfoque Gaussiano      | Original - Degradada     | 35.81 | 0.88  | 18.91  | 0.16   |
+|                           | Original - Restaurada    | 30.97 | 0.88  | 53.71  | 0.15   |
+| Ruido Gaussiano           | Original - Degradada     | 28.12 | 0.14  | 100.34 | 0.75   |
+|                           | Original - Restaurada    | 28.50 | 0.60  | 92.93  | 0.39   |
+| Movimiento Involuntario   | Original - Degradada     | 36.82 | 0.89  | 16.05  | 0.07   |
+|                           | Original - Restaurada    | 30.82 | 0.88  | 56.27  | 0.07   |
+| Iluminación y Contraste   | Original - Degradada     | 29.59 | 0.93  | 84.23  | 0.01   |
+|                           | Original - Restaurada    | 29.61 | 0.92  | 76.76  | 0.02   |
+| Iluminación Desigual      | Original - Degradada     | 31.98 | 0.96  | 45.13  | 0.02   |
+|                           | Original - Restaurada    | 31.07 | 0.95  | 52.35  | 0.03   |
+| Sombras Aleatorias        | Original - Degradada     | 28.45 | 0.82  | 95.35  | 0.09   |
+|                           | Original - Restaurada    | 28.61 | 0.85  | 91.84  | 0.07   |
+| Reflejos Especulares      | Original - Degradada     | 39.23 | 0.95  | 8.25   | 0.07   |
+|                           | Original - Restaurada    | 30.70 | 0.93  | 57.77  | 0.08   |
+| Defectos del Preservativo | Original - Degradada     | 41.08 | 0.94  | 5.52   | 0.10   |
+|                           | Original - Restaurada    | 31.73 | 0.92  | 45.25  | 0.10   |
+
 
 </div>
